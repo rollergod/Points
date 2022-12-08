@@ -1,18 +1,19 @@
 ﻿
-function DrawContainer() {
+function GetInitData() {
     $.ajax({
         type: 'GET',
-        url: 'points/json',
+        url: 'points/getdots',
         success: function (response) {
-            Draw(response);
+            DrawStageAndElements(response);
         },
         error: function (error) {
             console.log(error)
-            alert('Error');
+            alert('Что-то пошло не так');
         }
     });
-}
-function Draw(response) {
+};
+
+function DrawStageAndElements(response) {
     var width = window.innerWidth;
     var height = window.innerHeight;
 
@@ -20,9 +21,7 @@ function Draw(response) {
         container: 'container',
         width: width,
         height: height,
-        name: 'test',
     });
-
 
     stage.on('click', (e) => {
 
@@ -44,7 +43,11 @@ function Draw(response) {
             url: 'points/create',
             data: model,
             success: function (response) {
-                DrawContainer();
+                GetInitData();
+            },
+            error: function (err) {
+                console.log(err);
+                alert('Упс, что-то пошло не так')
             }
         })
     });
@@ -52,14 +55,17 @@ function Draw(response) {
 
     var layer = new Konva.Layer();
     for (var i = 0; i < response.length; i++) {
+
         var group = new Konva.Group();
+
         var circle = new Konva.Circle({
-            x: response[i].positionX, 
-            y: response[i].positionY, 
+            x: response[i].positionX,
+            y: response[i].positionY,
             radius: response[i].radius,
-            fill: response[i].color, 
+            fill: response[i].color,
             name: response[i].id + ''
-        })
+        });
+
         circle.on('dblclick', function (e) {
 
             const clickedOnEmptyArea = e.target === stage;
@@ -80,17 +86,19 @@ function Draw(response) {
                             shapes[i].destroy();
                         }
                         layer.draw();
-                    } else { alert("Error") }
+                    } else {
+                        alert("Что-то пошло не так")
+                    }
                 }
             });
-        })
+        });
+
         group.add(circle)
         var starPosition = response[i].positionY + response[i].radius + 5;
         for (var j = 0; j < response[i].comments.length; j++) {
             var simpleLabel = new Konva.Label({
                 x: (response[i].positionX - (response[i].comments[j].text.length * 5.1)),
                 y: starPosition,
-                opacity: 0.75,
             });
 
             simpleLabel.add(
@@ -117,7 +125,7 @@ function Draw(response) {
         layer.add(group);
     }
     stage.add(layer);
-}
+};
 
-DrawContainer();
+GetInitData();
 

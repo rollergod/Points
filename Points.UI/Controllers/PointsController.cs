@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Points.Application.Interfaces;
 using Points.Domain.Entities;
 using Points.Domain.ViewModels;
-using Points.UI.Models;
 
 namespace Points.UI.Controllers
 {
@@ -21,7 +20,7 @@ namespace Points.UI.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Json()
+        public async Task<JsonResult> GetDots()
         {
             var dots = await _dotRepository.GetAllDots();
             return Json(dots);
@@ -31,7 +30,6 @@ namespace Points.UI.Controllers
         public async Task<JsonResult> Create(DotViewModel model)
         {
             var result = await _dotRepository.CreateDot(model);
-
             return Json(model);
         }
 
@@ -39,7 +37,6 @@ namespace Points.UI.Controllers
         public async Task<JsonResult> Delete(int dotId)
         {
             var result = await _dotRepository.RemoveDot(dotId);
-
             return Json(result);
         }
     }

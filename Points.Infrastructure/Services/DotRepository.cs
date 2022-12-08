@@ -34,8 +34,6 @@ namespace Points.Infrastructure.Services
 
         public async Task<IEnumerable<Dot>> GetAllDots()
         {
-           
-
             if(_context.Dots.Count() == 0)
             {
                 CommentViewModel commentViewModel = new CommentViewModel()
